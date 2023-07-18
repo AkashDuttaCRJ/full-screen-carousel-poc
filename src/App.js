@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Carousel from "./Carousel";
 
 function App() {
+  const generateColorFromIndex = (index) => {
+    const hue = (index * 360) / 10;
+    const saturation = 100;
+    const lightness = 50;
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Carousel>
+        {Array.from(Array(10).keys()).map((item, index) => (
+          <div
+            key={index}
+            className="carousel__item"
+            style={{
+              backgroundColor: generateColorFromIndex(index),
+            }}
+          >
+            {item + 1}
+          </div>
+        ))}
+      </Carousel>
     </div>
   );
 }
