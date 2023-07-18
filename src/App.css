@@ -46,6 +46,13 @@
   transition: transform 0.5s ease-in-out, scale 0.5s ease-in-out, z-index 0.5s ease-in-out;
 }
 
+@media (max-width: 768px) {
+  .carousel__item {
+    height: 100%;
+    top: 0;
+  }
+}
+
 .carousel__item[data-previous-hidden='true'] {
   position: absolute;
   left: 50%;
@@ -121,6 +128,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 50;
+  outline: none;
 }
 
 .carousel__button:hover:not(:disabled) {
@@ -130,6 +139,11 @@
 .carousel__button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.carousel__button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 
 @keyframes animate-in-p {

@@ -115,6 +115,44 @@ const Carousel = ({ children, infinite }) => {
     };
   }, [isFirstRender]);
 
+  useEffect(() => {
+    document.addEventListener("keydown", handleTabFocus);
+
+    return () => {
+      document.removeEventListener("keydown", handleTabFocus);
+    };
+  }, []);
+
+  const handleTabFocus = (e) => {
+    const trapFocusContainer = document.querySelector("[data-trap-focus=true]");
+    if (!trapFocusContainer) {
+      return;
+    }
+
+    const isTabPressed = e.key === "Tab" || e.keyCode === 9;
+    if (!isTabPressed) {
+      return;
+    }
+
+    const focusableElements = trapFocusContainer.querySelectorAll(
+      "a[href], button:not([disabled]), textarea:not([disabled]), input[type=text]:not([disabled]), input[type=radio]:not([disabled]), input[type=checkbox]:not([disabled]), select:not([disabled]), [tabindex]:not([disabled]):not([tabindex='-1'])"
+    );
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement =
+      focusableElements[focusableElements.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === firstFocusableElement) {
+        lastFocusableElement.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (document.activeElement === lastFocusableElement) {
+        firstFocusableElement.focus();
+        e.preventDefault();
+      }
+    }
+  };
+
   const isNextAvailable = activeIndex < childrenLength - 1;
   const isPreviousAvailable = activeIndex > 0;
 
@@ -150,7 +188,7 @@ const Carousel = ({ children, infinite }) => {
 
   return createPortal(
     <div className="carousel__wrapper">
-      <div className="carousel__container">
+      <div className="carousel__container" data-trap-focus>
         <div className="carousel__overlay" />
         <div
           className="carousel__cards"
