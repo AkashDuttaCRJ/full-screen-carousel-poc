@@ -10,7 +10,7 @@ function App() {
   };
   return (
     <div className="App">
-      <Carousel>
+      <Carousel infinite>
         {Array.from(Array(10).keys()).map((item, index) => (
           <div
             key={index}

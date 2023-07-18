@@ -10,35 +10,49 @@ const Carousel = ({ children, infinite }) => {
   const childrenLength = React.Children.count(children);
 
   const circularArray = (number, length) => {
-    return [];
+    let auxArray = Array.from({ length: length }, (_, i) => i);
+    let mid1 = Math.floor(auxArray.length / 2);
+    let mid2 = length - mid1 - 1;
+    let circularArray = [auxArray[auxArray.indexOf(number)]];
+    for (let i = 0; i < mid1; i++) {
+      let index = auxArray.indexOf(number) + i + 1;
+      if (index > length - 1) {
+        index = index - length;
+      }
+      // push to the end of the array
+      circularArray.push(auxArray[index]);
+    }
+    for (let i = 0; i < mid2; i++) {
+      let index = auxArray.indexOf(number) - i - 1;
+      if (index < 0) {
+        index = length + index;
+      }
+      // push to the beginning of the array
+      circularArray.unshift(auxArray[index]);
+    }
+    return circularArray;
   };
 
   const getCircularIndex = () => {
-    let previousHiddenIndexes = [];
-    let nextHiddenIndexes = [];
-    let previousIndex = activeIndex - 1;
-    let nextIndex = activeIndex + 1;
-    if (previousIndex < 0) {
-      previousIndex = childrenLength - 1;
-    }
-    if (nextIndex > childrenLength - 1) {
-      nextIndex = 0;
-    }
-
+    let circularArrayIndexes = circularArray(activeIndex, childrenLength);
+    let previousIndex =
+      circularArrayIndexes[circularArrayIndexes.indexOf(activeIndex) - 1];
+    let nextIndex =
+      circularArrayIndexes[circularArrayIndexes.indexOf(activeIndex) + 1];
+    let previousHiddenIndexes = circularArrayIndexes.slice(
+      0,
+      circularArrayIndexes.indexOf(activeIndex) - 1
+    );
+    let nextHiddenIndexes = circularArrayIndexes.slice(
+      circularArrayIndexes.indexOf(activeIndex) + 2
+    );
     return {
-      previousHiddenIndexes,
-      nextHiddenIndexes,
       previousIndex,
       nextIndex,
+      previousHiddenIndexes,
+      nextHiddenIndexes,
     };
   };
-
-  useEffect(() => {
-    Array.from({ length: childrenLength }, (_, i) => i).map((index) => {
-      circularArray(index, childrenLength);
-      return index;
-    });
-  }, []);
 
   const isPreviousHidden = (index) => {
     if (infinite) {
